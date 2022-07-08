@@ -18,8 +18,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('get_form')}}">Formulaire</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('courses') }}">Courses</a>
+            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{{ url_for('propos')}}">A propos</a>
+            </li>
             </ul>
         </div>
     </nav>
@@ -29,6 +37,7 @@
         {% endfor %}
         {% block content %} {% endblock %}
     </div>
+    {% if select_needed == True %}
     <form id ='image_form' action = "{{url_for('hv_page')}}" method="post">
         <label for="file">Select file</label>
         <select id="file" name="file" onchange="document.getElementById('image_form').submit();" class="form-select form-select-sm" aria-label=".form-select-sm example">
@@ -41,8 +50,8 @@
             {% endfor %}
         </select>
     </form>
-
     {{ script|safe }}
+    {% endif %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

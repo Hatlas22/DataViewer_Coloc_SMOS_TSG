@@ -1,0 +1,143 @@
+<!doctype html>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} New Coloc {% endblock %}</h1>
+
+    <form method="POST" action="{{ url_for('get_form')}}">
+        {{ form.csrf_token }}
+        <p>
+            {{ form.meanr_ave.label }}
+            {{ form.meanr_ave(size=20) }}
+        </p>
+
+        {% if form.meanr_ave.errors %}
+            <ul class="errors">
+                {% for error in form.meanr_ave.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.tsg_product.label }}
+        </p>
+        {{ form.tsg_product() }}
+
+        {% if form.tsg_product.errors %}
+            <ul class="errors">
+                {% for error in form.tsg_product.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.dataset.label }}
+        </p>
+        {{ form.dataset() }}
+
+        {% if form.dataset.errors %}
+            <ul class="errors">
+                {% for error in form.dataset.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.orbit_type.label }}
+            {{ form.orbit_type() }}
+        </p>
+
+        {% if form.orbit_type.errors %}
+            <ul class="errors">
+                {% for error in form.orbit_type.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.transects.label }}
+        </p>
+        {{ form.transects() }}
+
+        {% if form.transects.errors %}
+            <ul class="errors">
+                {% for error in form.transects.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.limdate_in.label }}
+            {{ form.limdate_in() }}
+        </p>
+
+        {% if form.limdate_in.errors %}
+            <ul class="errors">
+                {% for error in form.limdate_in.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.limdate_out.label }}
+            {{ form.limdate_out() }}
+        </p>
+
+        {% if form.limdate_out.errors %}
+            <ul class="errors">
+                {% for error in form.limdate_out.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.user.label }}
+            {{ form.user(size=20) }}
+        </p>
+
+        {% if form.user.errors %}
+            <ul class="errors">
+                {% for error in form.user.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.min_length.label }}
+            {{ form.min_length() }}
+        </p>
+
+        {% if form.min_length.errors %}
+            <ul class="errors">
+                {% for error in form.min_length.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            {{ form.progress_recorder() }} {{ form.progress_recorder.label }}
+        </p>
+
+        {% if form.progress_recorder.errors %}
+            <ul class="errors">
+                {% for error in form.progress_recorder.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            <input type="submit" value="Add">
+        </p>
+    </form>
+
+{% endblock %}

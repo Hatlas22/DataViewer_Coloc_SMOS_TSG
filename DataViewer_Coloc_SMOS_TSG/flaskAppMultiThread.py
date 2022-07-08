@@ -4,34 +4,41 @@ except ImportError:
     raise RuntimeError("This example requries Python3 / asyncio")
 
 import json
-from datetime import timedelta
 from io import StringIO
 from threading import Thread
-
+from db_functions import *
 import holoviews as hv
 import pandas as pd
 from bokeh.application import Application
 from bokeh.application.handlers import FunctionHandler
 from bokeh.embed import server_document
 from bokeh.layouts import layout
-from bokeh.models import (CustomJS, ColumnDataSource, Slider, Select, LinearAxis, Range1d, DateRangeSlider,
-                          Button, DataTable, DateFormatter, TableColumn, SelectEditor, CellEditor, CDSView, GroupFilter,
-                          IndexFilter, CheckboxButtonGroup)
+from bokeh.models import ColumnDataSource, LinearAxis, Range1d, CheckboxButtonGroup
 from bokeh.tile_providers import CARTODBPOSITRON, get_provider
 from bokeh.plotting import figure
 from bokeh.server.server import BaseServer
 from bokeh.server.tornado import BokehTornado
 from bokeh.server.util import bind_sockets
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
+from forms import CourseForm
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from pyproj import Proj, transform, Transformer
+from pyproj import Transformer
+import os
 
 hv.extension('bokeh')
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your secret key'
 
-import os
+path = "/home/rachid/PycharmProjects/Flask_Insitude/data/"
+
+files = os.listdir(path)
+files.sort()
+
+initialize_db()
+
+courses_list = []
 
 path = "data/"
 
@@ -132,6 +139,7 @@ def viz(doc):
         else:
             glyph3.visible = False
         '''
+
     checkbox_button_group = CheckboxButtonGroup(labels=LABELS, active=[0, 1])
     checkbox_button_group.on_change("active", callback)
 
@@ -165,7 +173,7 @@ def hv_page():
     # script containing the app
     script = server_document('http://localhost:%d/hvapp' % port)
     return render_template("index.html", script=script, template="Flask",
-                           files=fileNames, savedFileOpt=selected_file)
+                           files=fileNames, savedFileOpt=selected_file, select_needed=True)
 
 
 def hv_worker():
@@ -179,9 +187,47 @@ def hv_worker():
     server.io_loop.start()
 
 
+@app.route('/coloc_form', methods=('GET', 'POST'))
+def get_form():
+    form = CourseForm()
+    if form.validate_on_submit():
+        courses_list.append({'Type de moyenne': form.meanr_ave.data,
+                             'Produit TSG': form.tsg_product.data,
+                             'Produit SMOS': form.dataset.data,
+                             "Type d'orbite": form.orbit_type.data,
+                             'Transects': form.transects.data,
+                             'Date min': form.limdate_in.data,
+                             'Date max': form.limdate_out.data,
+                             'utilisateur': form.user.data,
+                             'Longueur minimale': form.min_length.data,
+                             'enregistreur de progression': form.progress_recorder.data
+                             })
+        coloc_info = {'Type de moyenne': form.meanr_ave.data,
+                      'Produit TSG': form.tsg_product.data,
+                      'Produit SMOS': form.dataset.data,
+                      "Type d'orbite": form.orbit_type.data,
+                      'Transects': form.transects.data,
+                      'Date min': form.limdate_in.data,
+                      'Date max': form.limdate_out.data,
+                      'utilisateur': form.user.data,
+                      'Longueur minimale': form.min_length.data,
+                      'enregistreur de progression': form.progress_recorder.data
+                      }
+        print(coloc_info)
+        add_coloc_db(coloc_info)
+        return redirect(url_for('courses'))
+    return render_template('formulaire.html', form=form)
+
+
 @app.route('/propos')
 def propos():
     return render_template("propos.html")
+
+
+@app.route('/courses/')
+def courses():
+    print(courses_list, "\n\n\n")
+    return render_template('courses.html', courses_list=courses_list)
 
 
 t = Thread(target=hv_worker)

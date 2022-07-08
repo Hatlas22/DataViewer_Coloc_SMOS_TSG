@@ -1,0 +1,25 @@
+<!doctype html>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Coloc effectuées {% endblock %}</h1>
+    <hr>
+    {% for course in courses_list %}
+        <h2> {{ course['Type de moyenne'] }} </h2>
+        <h4> {{ course['Produit TSG'] }} </h4>
+        <p> {{ course['Produit SMOS'] }} </p>
+        <p> {{ course["Type d'orbite"] }} </p>
+        <p> {{ course['Transects'] }} </p>
+        <p> {{ course['Date min'] }} </p>
+        <p><i>({{ course['Date max'] }})</i></p>
+        <p><i>({{ course['Longueur minimale'] }})</i></p>
+        <p> {{ course['Transects'] }} </p>
+        <p>Enregistrement:
+            {% if course['progress_recorder'] %}
+                Disponible
+            {% else %}
+                Indisponible
+            {% endif %}</p>
+        <hr>
+    {% endfor %}
+{% endblock %}
